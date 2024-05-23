@@ -60,6 +60,11 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void led_blinky(void)
+{
+  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_2);
+  HAL_Delay(500);
+}
 
 /* USER CODE END 0 */
 
@@ -108,6 +113,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    led_blinky();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
