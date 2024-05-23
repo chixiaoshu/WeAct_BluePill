@@ -1,5 +1,13 @@
 {
     "files.associations": {
-        "adc.h": "c"
+        "main.h": "c",
+        "adc.h": "c",
+        "dma.h": "c",
+        "i2c.h": "c",
+        "spi.h": "c",
+        "tim.h": "c",
+        "usart.h": "c",
+        "gpio.h": "c",
+        "stdio.h": "c"
     }
 }
