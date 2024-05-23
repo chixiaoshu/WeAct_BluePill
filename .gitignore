@@ -3,3 +3,6 @@ MDK-ARM/WeAct_BluePill
 !MDK-ARM/WeAct_BluePill/*.sct
 # !MDK-ARM/WeAct_BluePill/*.axf
 # !MDK-ARM/WeAct_BluePill/*.hex
+
+MDK-ARM/.vscode/*.log
+MDK-ARM/.vscode/*.lock
