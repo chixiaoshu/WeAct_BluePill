@@ -1,8 +1,7 @@
 MDK-ARM
+
 !MDK-ARM/.vscode/*.json
-
 !MDK-ARM/RTE
-
 !MDK-ARM/*.s
 !MDK-ARM/*.uvoptx
 !MDK-ARM/*.uvprojx
@@ -10,4 +9,7 @@ MDK-ARM
 !MDK-ARM/WeAct_BluePill/*.sct
 # !MDK-ARM/WeAct_BluePill/*.axf
 # !MDK-ARM/WeAct_BluePill/*.hex
+
+
+
 
