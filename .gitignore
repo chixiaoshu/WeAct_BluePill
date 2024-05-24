@@ -1,6 +1,6 @@
+.vscode
 MDK-ARM/*
 
-!MDK-ARM/.vscode/*.json
 !MDK-ARM/*.s
 !MDK-ARM/*.uvoptx
 !MDK-ARM/*.uvprojx
