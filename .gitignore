@@ -1,4 +1,5 @@
 MDK-ARM/*
+MDK-ARM/WeAct_BluePill/*
 
 !MDK-ARM/.vscode/*.json
 !MDK-ARM/RTE
