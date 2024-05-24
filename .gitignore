@@ -1,4 +1,4 @@
-MDK-ARM
+MDK-ARM/*
 
 !MDK-ARM/.vscode/*.json
 !MDK-ARM/RTE
