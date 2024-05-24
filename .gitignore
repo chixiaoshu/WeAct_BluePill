@@ -1,8 +1,13 @@
-MDK-ARM/WeAct_BluePill
+MDK-ARM
+
+!MDK-ARM/RTE
+
+!MDK-ARM/.vscode/*.json
+!MDK-ARM/*.s
+!MDK-ARM/*.uvoptx
+!MDK-ARM/*.uvprojx
 !MDK-ARM/WeAct_BluePill/*.map
 !MDK-ARM/WeAct_BluePill/*.sct
 # !MDK-ARM/WeAct_BluePill/*.axf
 # !MDK-ARM/WeAct_BluePill/*.hex
 
-MDK-ARM/.vscode/*.log
-MDK-ARM/.vscode/*.lock
