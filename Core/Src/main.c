@@ -29,6 +29,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
+#include "string.h"
+
+#include "mq135.h"
 
 /* USER CODE END Includes */
 
@@ -50,6 +53,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+uint32_t ADC_originValue[2] = {0};
 
 /* USER CODE END PV */
 
@@ -67,6 +71,7 @@ void led_blinky(void)
   HAL_Delay(500);
 }
 
+
 /* USER CODE END 0 */
 
 /**
@@ -77,6 +82,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+	uint8_t temp_buffer[16];
 
   /* USER CODE END 1 */
 
@@ -106,15 +112,20 @@ int main(void)
   MX_ADC1_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
-
+	MQ135_Init();
+	
+	HAL_Delay(50); // MQ135 initialization requires a short waiting time before the correct value is displayed
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    led_blinky();
+//    led_blinky();
+		
+		sprintf((char *)temp_buffer, "MQ=%0.3fPM\r\n", MQ135_GetQuality()/1000);
+		HAL_UART_Transmit(&huart2, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+		HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

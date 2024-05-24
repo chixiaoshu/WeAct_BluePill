@@ -8,6 +8,8 @@
                 "c:\\Users\\chixi\\Documents\\Workspace\\STM32\\F103CBT6\\WeAct_BluePill\\Drivers\\STM32F1xx_HAL_Driver\\Inc\\Legacy",
                 "c:\\Users\\chixi\\Documents\\Workspace\\STM32\\F103CBT6\\WeAct_BluePill\\Drivers\\CMSIS\\Device\\ST\\STM32F1xx\\Include",
                 "c:\\Users\\chixi\\Documents\\Workspace\\STM32\\F103CBT6\\WeAct_BluePill\\Drivers\\CMSIS\\Include",
+                "c:\\Users\\chixi\\Documents\\Workspace\\STM32\\F103CBT6\\WeAct_BluePill\\User\\DHT11",
+                "c:\\Users\\chixi\\Documents\\Workspace\\STM32\\F103CBT6\\WeAct_BluePill\\User\\MQ135",
                 "D:\\DevEnv\\Keil_v5\\ARM\\ARMCLANG\\include",
                 "D:\\DevEnv\\Keil_v5\\ARM\\ARMCLANG\\include\\arm_linux",
                 "D:\\DevEnv\\Keil_v5\\ARM\\ARMCLANG\\include\\arm_linux_compat",

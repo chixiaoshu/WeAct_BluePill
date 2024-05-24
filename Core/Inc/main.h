@@ -63,6 +63,8 @@ void Error_Handler(void);
 #define ST7789_BLK_GPIO_Port GPIOB
 #define ST7789_DC_Pin GPIO_PIN_1
 #define ST7789_DC_GPIO_Port GPIOB
+#define DHT11_DATA_Pin GPIO_PIN_8
+#define DHT11_DATA_GPIO_Port GPIOA
 #define ST7789_CS_Pin GPIO_PIN_15
 #define ST7789_CS_GPIO_Port GPIOA
 
