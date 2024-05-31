@@ -8,19 +8,24 @@ extern "C" {
 #include "stm32f1xx_hal.h"
 #include "main.h"
 
-extern TIM_HandleTypeDef htim3;  	//ÒıÈë±äÁ¿
+#define DHT11_TIMER         htim3
+extern TIM_HandleTypeDef    DHT11_TIMER;  	//å¼•å…¥å˜é‡
 
-//º¯ÊıÔ­ĞÍ
-void Delay_us(uint8_t);   //Î¢ÃîÑÓÊ±º¯Êı£¬ÆôÓÃÁËÒ»¸ö¶¨Ê±Æ÷¡£ÒòÎªDHT11Í¨Ñ¶¹ı³ÌÉæ¼°Î¢ÃîÑÓÊ±
-void GPIO_Input(void);	  //GPIO ×´Ì¬×ª±äµÄº¯Êı CUBEMXÄ¬ÈÏµÄGPIO³õÊ¼»¯ÎÒÖ»¿ªÆôÁËÏà¹Ø×ÜÏßµÄÊ¹ÄÜ
-//°ÑGPIO×´Ì¬£¨ÊäÈë Êä³ö£©·â×°³ÉÁËÁ½¸öº¯Êı
+#define DHT11_OUT_HIGH  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_8,GPIO_PIN_SET)
+#define DHT11_OUT_LOW   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_8,GPIO_PIN_RESET)
+#define DHT11_IN_Read   HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8)
+
+//å‡½æ•°åŸå‹
+//void Delay_us(uint8_t us);   //å¾®å¦™å»¶æ—¶å‡½æ•°ï¼Œå¯ç”¨äº†ä¸€ä¸ªå®šæ—¶å™¨ã€‚å› ä¸ºDHT11é€šè®¯è¿‡ç¨‹æ¶‰åŠå¾®å¦™å»¶æ—¶
+void GPIO_Input(void);	  //GPIO çŠ¶æ€è½¬å˜çš„å‡½æ•° CUBEMXé»˜è®¤çš„GPIOåˆå§‹åŒ–æˆ‘åªå¼€å¯äº†ç›¸å…³æ€»çº¿çš„ä½¿èƒ½
+//æŠŠGPIOçŠ¶æ€ï¼ˆè¾“å…¥ è¾“å‡ºï¼‰å°è£…æˆäº†ä¸¤ä¸ªå‡½æ•°
 void GPIO_Output(void);
-void DHT11_Rst(void);		//Ö÷»ú¿ªÊ¼²É¼¯µÄĞÅºÅ
-uint8_t DHT11_Check(void);  //¼ì²éDHTÊÇ·ñ»ØÓ¦
-uint8_t DHT11_Init(void);   //³õÊ¼»¯º¯Êı
-uint8_t DHT11_ReadBit(void);   //¶ÁÈ¡Ò»Î»
-uint8_t DHT11_ReadByte(void);  //¶ÁÈ¡Ò»¸ö×Ö½Ú
-uint8_t DHT11_ReadData(uint8_t *);   //¶ÁÈ¡Êı¾İ£¨40¸öÎ»£© 
+void DHT11_Rst(void);		//ä¸»æœºå¼€å§‹é‡‡é›†çš„ä¿¡å·
+uint8_t DHT11_Check(void);  //æ£€æŸ¥DHTæ˜¯å¦å›åº”
+uint8_t DHT11_Init(void);   //åˆå§‹åŒ–å‡½æ•°
+uint8_t DHT11_ReadBit(void);   //è¯»å–ä¸€ä½
+uint8_t DHT11_ReadByte(void);  //è¯»å–ä¸€ä¸ªå­—èŠ‚
+uint8_t DHT11_ReadData(uint16_t *temp, uint16_t *hum);   //è¯»å–æ•°æ®ï¼ˆ40ä¸ªä½ï¼‰ 
 
 #ifdef __cplusplus
 }

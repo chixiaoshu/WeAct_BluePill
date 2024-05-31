@@ -2,39 +2,42 @@
 
 void Delay_us(uint8_t us)
 {
-    HAL_TIM_Base_Start(&htim3);
-    __HAL_TIM_SetCounter(&htim3, us);
-    while (__HAL_TIM_GetCounter(&htim3) > 0);
-    HAL_TIM_Base_Stop(&htim3);
+    uint16_t differ = 0xffff - us - 5;
+    __HAL_TIM_SET_COUNTER(&DHT11_TIMER, differ); // è®¾å®šTIMè®¡æ•°å™¨èµ·å§‹å€¼
+    HAL_TIM_Base_Start(&DHT11_TIMER);            // å¯åŠ¨å®šæ—¶å™¨
+
+    while (differ < 0xffff - 5)
+    {                                                 // åˆ¤æ–­
+        differ = __HAL_TIM_GET_COUNTER(&DHT11_TIMER); // æŸ¥è¯¢è®¡æ•°å™¨çš„è®¡æ•°å€¼
+    }
+    HAL_TIM_Base_Stop(&DHT11_TIMER);
 }
 
 void GPIO_Input(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitTypeDef GPIO_InitStruct;
     /*Configure GPIO pin : PA8 */
     GPIO_InitStruct.Pin = GPIO_PIN_8;
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
 void GPIO_Output(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitTypeDef GPIO_InitStruct;
     /*Configure GPIO pin : PA8 */
     GPIO_InitStruct.Pin = GPIO_PIN_8;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
-void DHT11_Rst(void)   //Ö÷»ú¿ªÊ¼ĞÅºÅ
+void DHT11_Rst(void) // ä¸»æœºå¼€å§‹ä¿¡å·
 {
     GPIO_Output();
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+    DHT11_OUT_LOW;
     HAL_Delay(20);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+    DHT11_OUT_HIGH;
     Delay_us(30);
 }
 
@@ -42,20 +45,24 @@ uint8_t DHT11_Check(void)
 {
     uint8_t retry = 0;
     GPIO_Input();
-    while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8) && retry < 100)      //µÈ´ı»ØÓ¦À­Î»µÍµçÆ½
+    while (DHT11_IN_Read && retry < 100) // ç­‰å¾…å›åº”æ‹‰ä½ä½ç”µå¹³
     {
         retry++;
         Delay_us(1);
     }
 
-    if (retry >= 100)return 1;else retry = 0;				//µ±±äÁ¿Öµ´óÓÚ100 ·µ»Ø1 ËµÃ÷ÎŞÏìÓ¦  ·µ»Ø 0 ÔòÎªÕıÈ·ÏìÓ¦
+    if (retry >= 100)
+        return 1;
+    else
+        retry = 0; // å½“å˜é‡å€¼å¤§äº100 è¿”å›1 è¯´æ˜æ— å“åº”  è¿”å› 0 åˆ™ä¸ºæ­£ç¡®å“åº”
 
-    while (!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8) && retry < 100)      //µÈ´ı±äÎª¸ßµçÆ½
+    while (!DHT11_IN_Read && retry < 100) // ç­‰å¾…å˜ä¸ºé«˜ç”µå¹³
     {
         retry++;
         Delay_us(1);
     }
-    if (retry >= 100)return 1;
+    if (retry >= 100)
+        return 1;
     return 0;
 }
 
@@ -65,52 +72,57 @@ uint8_t DHT11_Init(void)
     return DHT11_Check();
 }
 
-uint8_t DHT11_ReadBit(void)   //¶ÁÈ¡Ò»¸öÎ»
+uint8_t DHT11_ReadBit(void) // è¯»å–ä¸€ä¸ªä½
 {
     uint8_t retry = 0;
-    while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8) && retry < 100)      //µÈ´ı±äÎªµÍµçÆ½
+    while (DHT11_IN_Read && retry < 100) // ç­‰å¾…å˜ä¸ºä½ç”µå¹³
     {
         retry++;
         Delay_us(1);
     }
     retry = 0;
-    while (!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8) && retry < 100)      //µÈ´ı±äÎª¸ßµçÆ½
+    while (!DHT11_IN_Read && retry < 100) // ç­‰å¾…å˜ä¸ºé«˜ç”µå¹³
     {
         retry++;
         Delay_us(1);
     }
-    Delay_us(40);  //40us ºóÈç¹ûÎªµÍµçÆ½ Êı¾İÎª0   ¸ßµçÆ½Êı¾İÎª1
-    if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8))return 1;else return 0;
+    Delay_us(40); // 40us åå¦‚æœä¸ºä½ç”µå¹³ æ•°æ®ä¸º0   é«˜ç”µå¹³æ•°æ®ä¸º1
+    if (DHT11_IN_Read)
+        return 1;
+    else
+        return 0;
 }
 
-uint8_t DHT11_ReadByte(void)    //¶ÁÈ¡Ò»¸ö×Ö½Ú  ·µ»ØÖµÎ»²É¼¯Öµ
+uint8_t DHT11_ReadByte(void) // è¯»å–ä¸€ä¸ªå­—èŠ‚  è¿”å›å€¼ä½é‡‡é›†å€¼
 {
     uint8_t i, dat;
     dat = 0;
     for (i = 0; i < 8; i++)
     {
-        dat <<= 1;									//Êı¾İ×óÒÆÒ»Î»
-        dat |= DHT11_ReadBit();			//Ã¿¶ÁÈ¡µ½Ò»¸öÎ» ·Åµ½datµÄ×îºóÒ»Î»
+        dat <<= 1;              // æ•°æ®å·¦ç§»ä¸€ä½
+        dat |= DHT11_ReadBit(); // æ¯è¯»å–åˆ°ä¸€ä¸ªä½ æ”¾åˆ°datçš„æœ€åä¸€ä½
     }
     return dat;
 }
 
-uint8_t DHT11_ReadData(uint8_t *h)
+uint8_t DHT11_ReadData(uint16_t *temp, uint16_t *hum)
 {
     uint8_t buf[5];
     uint8_t i;
     DHT11_Rst();
-    if (DHT11_Check() == 0) {
+    if (DHT11_Check() == 0)
+    {
         for (i = 0; i < 5; i++)
         {
             buf[i] = DHT11_ReadByte();
         }
-        if (buf[0] + buf[1] + buf[2] + buf[3] == buf[4])
+        if ((buf[0] + buf[1] + buf[2] + buf[3]) == buf[4])
         {
-            *h = buf[0];
-            h++;
-            *h = buf[2];
+            *hum = (buf[0] << 8) + buf[1];
+            *temp = (buf[2] << 8) + buf[3];
         }
-    } else return 1;
+    }
+    else
+        return 1;
     return 0;
 }

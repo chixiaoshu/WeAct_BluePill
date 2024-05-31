@@ -31,7 +31,9 @@
 #include "stdio.h"
 #include "string.h"
 
+#include "esp01s.h"
 #include "mq135.h"
+#include "dht11.h"
 
 /* USER CODE END Includes */
 
@@ -82,8 +84,9 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	uint8_t temp_buffer[16];
-
+	uint8_t temp_buffer[64];
+  uint16_t temperature;
+  uint16_t humidity;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -111,10 +114,22 @@ int main(void)
   MX_USART2_UART_Init();
   MX_ADC1_Init();
   MX_I2C1_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-	MQ135_Init();
-	
-	HAL_Delay(50); // MQ135 initialization requires a short waiting time before the correct value is displayed
+	// MQ135_Init();
+  while(DHT11_Init()){
+    sprintf((char *)temp_buffer,"DHT11 Checked failed!!!\r\n");
+    HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+    HAL_Delay(500);
+  }
+  sprintf((char *)temp_buffer,"DHT11 Checked Sucess!!!\r\n");
+  HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+  // ESP01S_Init();
+  // ESP01S_ConnectWiFi_Macro();
+  // ESP01S_InitMQTT();
+  
+
+	// HAL_Delay(50); // MQ135 initialization requires a short waiting time before the correct value is displayed
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -122,10 +137,15 @@ int main(void)
   while (1)
   {
 //    led_blinky();
-		
-		sprintf((char *)temp_buffer, "MQ=%0.3fPM\r\n", MQ135_GetQuality()/1000);
-		HAL_UART_Transmit(&huart2, temp_buffer, strlen((char *)temp_buffer), 0xFF);
-		HAL_Delay(1000);
+		DHT11_ReadData(&temperature,&humidity);
+    sprintf((char *)temp_buffer, "DHT11 Temperature = %d.%d degree\r\n",temperature>>8,temperature&0xFF);
+    HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+    sprintf((char *)temp_buffer, "DHT11 Humidity = %d.%d%%\r\n",humidity>>8,humidity&0xFF);   
+    HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+		// sprintf((char *)temp_buffer, "MQ=%0.3fPM\r\n", MQ135_GetQuality()/1000);
+		// HAL_UART_Transmit(&huart2, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+		// HAL_Delay(1000);
+    HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -194,7 +214,7 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
-  }
+  }                                                                                                                                                                                                                                                             
   /* USER CODE END Error_Handler_Debug */
 }
 

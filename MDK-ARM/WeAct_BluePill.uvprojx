@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xB</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;../User/DHT11;..\User\MQ135</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;../User/DHT11;../User/MQ135;../User/ESP01S</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -571,6 +571,16 @@
               <FileName>mq135.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\MQ135\mq135.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Hardware/ESP01S</GroupName>
+          <Files>
+            <File>
+              <FileName>esp01s.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\ESP01S\esp01s.c</FilePath>
             </File>
           </Files>
         </Group>
