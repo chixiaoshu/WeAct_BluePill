@@ -1,6 +1,6 @@
 #include "st7789.h"
 
-#ifdef USE_DMA
+#ifdef USE_SPI_DMA
 #include <string.h>
 uint16_t DMA_MIN_SIZE = 16;
 /* If you're using DMA, then u need a "framebuffer" to store datas to be displayed.
@@ -18,11 +18,11 @@ uint8_t disp_buf[ST7789_WIDTH * HOR_LEN * 2];
  * @return none
  */
 void ST7789_Reset(void){
-	HAL_Delay(20);
+	HAL_Delay(10);
   ST7789_RST_Clr();
-  HAL_Delay(20);
+  HAL_Delay(10);
   ST7789_RST_Set();
-	HAL_Delay(20);
+	HAL_Delay(10);
 }
 
 /**
@@ -53,7 +53,7 @@ static void ST7789_WriteData(uint8_t *buff, size_t buff_size)
 
 	while (buff_size > 0) {
 		uint16_t chunk_size = buff_size > 65535 ? 65535 : buff_size;
-		#ifdef USE_DMA
+		#ifdef USE_SPI_DMA
 		uint16_t* buff16 = (uint16_t*)buff;
 			if (DMA_MIN_SIZE <= buff_size)
 			{
@@ -151,7 +151,7 @@ static void ST7789_SetAddressWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint1
  */
 void ST7789_Init(void)
 {
-	#ifdef USE_DMA
+	#ifdef USE_SPI_DMA
 		memset(disp_buf, 0, sizeof(disp_buf));
 	#endif
 	ST7789_Reset();
@@ -202,9 +202,10 @@ void ST7789_Init(void)
 
 	HAL_Delay(50);
 	ST7789_Fill_Color(BLACK);				//	Fill with Black.
-	
+
 	/* Turn on backlight */
 	ST7789_BLK_On();
+	
 }
 
 /**
@@ -218,7 +219,7 @@ void ST7789_Fill_Color(uint16_t color)
 	ST7789_SetAddressWindow(0, 0, ST7789_WIDTH - 1, ST7789_HEIGHT - 1);
 	ST7789_Select();
 
-	#ifdef USE_DMA
+	#ifdef USE_SPI_DMA
 	uint16_t* disp_buf16 = (uint16_t*)disp_buf;
 		for (i = 0; i < ST7789_HEIGHT / HOR_LEN; i++)
 		{

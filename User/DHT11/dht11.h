@@ -25,7 +25,7 @@ uint8_t DHT11_Check(void);  //检查DHT是否回应
 uint8_t DHT11_Init(void);   //初始化函数
 uint8_t DHT11_ReadBit(void);   //读取一位
 uint8_t DHT11_ReadByte(void);  //读取一个字节
-uint8_t DHT11_ReadData(uint16_t *temp, uint16_t *hum);   //读取数据（40个位） 
+uint8_t DHT11_ReadData(float *temp, float *hum);   //读取数据（40个位） 
 
 #ifdef __cplusplus
 }

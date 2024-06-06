@@ -8,10 +8,10 @@
 extern SPI_HandleTypeDef ST7789_SPI_PORT;
 
 /* choose whether use DMA or not */
-#define USE_DMA
+#define USE_SPI_DMA
 
 /* If u need CS control, comment below*/
-#define CFG_NO_CS
+//#define CFG_NO_CS
 
 /* Pin connection*/
 #define ST7789_RST_PORT ST7789_RST_GPIO_Port
@@ -39,8 +39,8 @@ extern SPI_HandleTypeDef ST7789_SPI_PORT;
  */
 
 /* Choose a type you are using */
-//#define USING_135X240
-#define USING_240X240
+#define USING_135X240
+//#define USING_240X240
 //#define USING_170X320
 
 /* Choose a display rotation you want to use: (0-3) */

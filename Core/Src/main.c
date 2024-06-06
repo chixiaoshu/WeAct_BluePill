@@ -28,9 +28,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stdio.h"
-#include "string.h"
+#include <stdio.h>
+#include <string.h>
 
+#include "st7789.h"
+#include "oled.h"
 #include "esp01s.h"
 #include "mq135.h"
 #include "dht11.h"
@@ -85,8 +87,9 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 	uint8_t temp_buffer[64];
-  uint16_t temperature;
-  uint16_t humidity;
+  float temperature;
+  float humidity;
+	uint16_t num = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -116,18 +119,33 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
+//	OLED_Init();
+//	OLED_OperateFrameBuffer(PEN_CLEAR);
+//	OLED_Refresh();//全局刷新
+	//	ST7789_Init();
+	//	ST7789_Fill_Color(WHITE);
 	// MQ135_Init();
-  while(DHT11_Init()){
-    sprintf((char *)temp_buffer,"DHT11 Checked failed!!!\r\n");
-    HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
-    HAL_Delay(500);
-  }
-  sprintf((char *)temp_buffer,"DHT11 Checked Sucess!!!\r\n");
-  HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+//  while(DHT11_Init()){
+//    sprintf((char *)temp_buffer,"DHT11 failed");
+//		OLED_ShowString(0, 1, temp_buffer);
+//    HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+//    HAL_Delay(500);
+//  }
+//  sprintf((char *)temp_buffer,"DHT11 Sucess");
+//	HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+//	OLED_ShowString(0, 1, temp_buffer);
+//	OLED_Refresh();//全局刷新
+//	HAL_Delay(500);
+	
+	if(HAL_ADC_Start_DMA(&hadc1, ADC_originValue, 2)!=HAL_OK)
+	{
+		Error_Handler();
+	}
+//  HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
   // ESP01S_Init();
   // ESP01S_ConnectWiFi_Macro();
   // ESP01S_InitMQTT();
-  
+   uint8_t data[5] = {0x55, 0x51, 0x51, 0x51, 0x6A};
 
 	// HAL_Delay(50); // MQ135 initialization requires a short waiting time before the correct value is displayed
   /* USER CODE END 2 */
@@ -136,16 +154,58 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+//		HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_2);
 //    led_blinky();
-		DHT11_ReadData(&temperature,&humidity);
-    sprintf((char *)temp_buffer, "DHT11 Temperature = %d.%d degree\r\n",temperature>>8,temperature&0xFF);
-    HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
-    sprintf((char *)temp_buffer, "DHT11 Humidity = %d.%d%%\r\n",humidity>>8,humidity&0xFF);   
-    HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
-		// sprintf((char *)temp_buffer, "MQ=%0.3fPM\r\n", MQ135_GetQuality()/1000);
-		// HAL_UART_Transmit(&huart2, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+		OLED_OperateFrameBuffer(PEN_CLEAR);
+//		DHT11_ReadData(&temperature,&humidity);
+//    sprintf((char *)temp_buffer, "Temp=%d.%d",temperature>>8,temperature&0xFF);
+//		HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+////		OLED_ShowString(1, 1, temp_buffer);
+//		sprintf((char *)temp_buffer, "Hum=%d.%d%%",humidity>>8,humidity&0xFF);
+//		HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+////		OLED_ShowString(2, 1, temp_buffer);
+////    HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+//   
+////    HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+////		// sprintf((char *)temp_buffer, "MQ=%0.3fPM\r\n", MQ135_GetQuality()/1000);
+////		// HAL_UART_Transmit(&huart2, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+//		HAL_Delay(1000);
+////		OLED_ShowNumber(0,0,num,1, 4);
+////		num++;
+
+//		HAL_Delay(1000);
+//		sprintf((char *)temp_buffer, "Lux=%d", ADC_originValue[1]);
+//		OLED_ShowString(3, 1, temp_buffer);
+//		if (DHT11_ReadData(&temperature, &humidity) == 0)
+//		{
+//			// 使用 sprintf 将浮点数格式化为字符串
+//			sprintf((char *)temp_buffer, "Temp=%.1fC", temperature);
+//			HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+//			OLED_ShowString(1, 1, temp_buffer);
+//			HAL_Delay(50);
+//			sprintf((char *)temp_buffer, "Hum=%.1f%%", humidity);
+//			HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+//			OLED_ShowString(2, 1, temp_buffer);
+//		}
+//		else
+//		{
+//			// 处理错误
+//			HAL_Delay(100);
+//			sprintf((char *)temp_buffer, "Error DHT11");
+//			HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFF);
+//			OLED_ShowString(0, 5, temp_buffer);
+//			HAL_Delay(1000);
+//		}
+		
+		// sprintf((char *)temp_buffer, "Temp=1000,Hum=1234,Lux=2345,Volt=4000,LED1=On,LCD=Off\r\n");
+		// HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFFFF);
+		// OLED_Refresh();//全局刷新
 		// HAL_Delay(1000);
-    HAL_Delay(500);
+		// sprintf((char *)temp_buffer, "Temp=1200,Hum=1384,Lux=1000,Volt=4000,LED1=Off,LCD=On\r\n");
+		// HAL_UART_Transmit(&huart1, temp_buffer, strlen((char *)temp_buffer), 0xFFFF);
+		HAL_Delay(1000);
+   
+		HAL_UART_Transmit(&huart1, data, sizeof(data), 0xFFFF);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

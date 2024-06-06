@@ -1,11 +1,11 @@
 #include "dht11.h"
+#include <stdint.h>
 
 void Delay_us(uint8_t us)
 {
     uint16_t differ = 0xffff - us - 5;
     __HAL_TIM_SET_COUNTER(&DHT11_TIMER, differ); // 设定TIM计数器起始值
     HAL_TIM_Base_Start(&DHT11_TIMER);            // 启动定时器
-
     while (differ < 0xffff - 5)
     {                                                 // 判断
         differ = __HAL_TIM_GET_COUNTER(&DHT11_TIMER); // 查询计数器的计数值
@@ -105,7 +105,9 @@ uint8_t DHT11_ReadByte(void) // 读取一个字节  返回值位采集值
     return dat;
 }
 
-uint8_t DHT11_ReadData(uint16_t *temp, uint16_t *hum)
+
+
+uint8_t DHT11_ReadData(float *temp, float *hum)
 {
     uint8_t buf[5];
     uint8_t i;
@@ -118,11 +120,20 @@ uint8_t DHT11_ReadData(uint16_t *temp, uint16_t *hum)
         }
         if ((buf[0] + buf[1] + buf[2] + buf[3]) == buf[4])
         {
-            *hum = (buf[0] << 8) + buf[1];
-            *temp = (buf[2] << 8) + buf[3];
+            // 湿度：buf[0]是整数部分，buf[1]是小数部分
+            *hum = buf[0] + buf[1] / 10.0;
+            // 温度：buf[2]是整数部分，buf[3]是小数部分
+            *temp = buf[2] + buf[3] / 10.0;
+        }
+        else
+        {
+            return 1; // 校验和错误
         }
     }
     else
-        return 1;
-    return 0;
+    {
+        return 1; // 传感器检查失败
+    }
+    return 0; // 成功
 }
+
